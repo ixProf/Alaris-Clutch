@@ -17,7 +17,7 @@
     "export": "node apps/cli/export.js",
     "refilter": "node apps/cli/refilter.js",
     "backfill": "node apps/cli/backfill.js",
-    "test": "node --test test/**/*.test.js"
+    "test": "node --test"
   },
   "engines": {
     "node": ">=18"
