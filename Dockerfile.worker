@@ -4,6 +4,13 @@ WORKDIR /app
 
 COPY . .
 RUN npm ci
+
+# --- DIAGNOSTIC (temporary) ---
+RUN echo "=== @jobscrapper in node_modules ===" && ls -la node_modules/@jobscrapper/ || echo "MISSING"
+RUN echo "=== sources link target ===" && ls -la node_modules/@jobscrapper/sources || echo "MISSING"
+RUN echo "=== registry.js exists? ===" && cat node_modules/@jobscrapper/sources/registry.js | head -5 || echo "FILE MISSING"
+# --- END DIAGNOSTIC ---
+
 RUN npx prisma generate
 
 # Stage 2: Worker Runner
