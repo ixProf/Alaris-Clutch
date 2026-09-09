@@ -5,6 +5,7 @@ import { JobRecord } from '@/lib/db';
 import { formatRelativeTime, formatExperience, getLocationGroup, getAgeBucket } from '@/lib/utils';
 import { CATEGORY_DEFINITIONS } from '@/lib/multi-classifier';
 import { ExternalLink, MapPin, Clock, Briefcase } from 'lucide-react';
+import { useI18n } from '@/lib/i18n/context';
 
 interface JobCardProps {
   job: JobRecord;
@@ -12,20 +13,21 @@ interface JobCardProps {
 }
 
 export function JobCard({ job, onSelectJob }: JobCardProps) {
+  const { t, isRtl } = useI18n();
   const locGroup = getLocationGroup(job);
   const age = getAgeBucket(job.postedAt);
   const isFresh = age === '24h';
 
   // Find matching category configs
   const jobCategories = job.categories.map((catId) => {
-    return (
-      CATEGORY_DEFINITIONS.find((def) => def.id === catId) || {
-        id: catId,
-        name: catId,
-        badgeColor: 'bg-[#1F2024] text-[#8A8F98] border-[rgba(255,255,255,0.08)]',
-        borderColor: 'rgba(255, 255, 255, 0.08)',
-      }
-    );
+    const localizedName = (t.categories as any)[catId];
+    const def = CATEGORY_DEFINITIONS.find((d) => d.id === catId);
+    return {
+      id: catId,
+      name: localizedName || def?.name || catId,
+      badgeColor: def?.badgeColor || 'bg-[#1F2024] text-[#8A8F98] border-[rgba(255,255,255,0.08)]',
+      borderColor: def?.borderColor || 'rgba(255, 255, 255, 0.08)',
+    };
   });
 
   return (
@@ -42,7 +44,7 @@ export function JobCard({ job, onSelectJob }: JobCardProps) {
           <div>
             <div className="flex items-center gap-2">
               <span className="text-xs font-semibold text-[#EEEEEE]">
-                {job.company || 'Confidential Company'}
+                {job.company || t.job.confidential}
               </span>
               {job.source && (
                 <span className="rounded bg-[#1F2024] px-1.5 py-0.5 text-[10px] font-mono uppercase text-[#8A8F98] border border-[rgba(255,255,255,0.06)]">
@@ -53,25 +55,25 @@ export function JobCard({ job, onSelectJob }: JobCardProps) {
             <div className="flex items-center gap-2.5 mt-1 text-xs text-[#8A8F98]">
               <span className="flex items-center gap-1">
                 <MapPin className="h-3 w-3 text-[#8A8F98]" />
-                {job.location || 'Unspecified'}
+                {job.location || t.job.unspecifiedLocation}
               </span>
               {job.remote && (
                 <span className="rounded bg-[#1F2024] px-1.5 py-0.5 text-[10px] font-medium text-[#EEEEEE] border border-[rgba(255,255,255,0.08)]">
-                  Remote
+                  {t.job.remoteBadge}
                 </span>
               )}
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col items-end gap-1 shrink-0">
+        <div className={`flex flex-col gap-1 shrink-0 ${isRtl ? 'items-start' : 'items-end'}`}>
           <div className="flex items-center gap-1 text-xs text-[#8A8F98]">
             <Clock className="h-3 w-3" />
             <span>{formatRelativeTime(job.postedAt)}</span>
           </div>
           {isFresh && (
             <span className="rounded bg-[#1F2024] px-2 py-0.5 text-[10px] font-medium text-[#5E6AD2] border border-[#5E6AD2]/30">
-              New
+              {t.job.freshBadge}
             </span>
           )}
         </div>
@@ -119,7 +121,7 @@ export function JobCard({ job, onSelectJob }: JobCardProps) {
             </span>
           ))}
           {job.technologies.length > 5 && (
-            <span className="text-[11px] text-[#8A8F98] pl-1 font-mono">
+            <span className="text-[11px] text-[#8A8F98] px-1 font-mono">
               +{job.technologies.length - 5}
             </span>
           )}
@@ -129,7 +131,7 @@ export function JobCard({ job, onSelectJob }: JobCardProps) {
       {/* Card Action footer */}
       <div className="mt-4 flex items-center justify-between text-xs text-[#8A8F98] pt-2">
         <span className="text-[#5E6AD2] font-medium group-hover:underline">
-          View details →
+          {isRtl ? `← ${t.job.viewDetails}` : `${t.job.viewDetails} →`}
         </span>
         {job.url && (
           <a
@@ -138,9 +140,9 @@ export function JobCard({ job, onSelectJob }: JobCardProps) {
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
             className="flex items-center gap-1 text-[#8A8F98] hover:text-[#EEEEEE] transition p-1"
-            title="Open original posting"
+            title={t.job.applyNow}
           >
-            <span>Original link</span>
+            <span>{t.job.originalSource}</span>
             <ExternalLink className="h-3 w-3" />
           </a>
         )}

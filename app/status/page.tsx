@@ -2,11 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Activity, Check, AlertTriangle, Clock, Database, RefreshCw, Radio } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Activity, Check, AlertTriangle, Clock, Database, RefreshCw, Radio } from 'lucide-react';
 import { formatRelativeTime } from '@/lib/utils';
 import { Button } from '@/components/Button';
+import { useI18n } from '@/lib/i18n/context';
 
 export default function StatusPage() {
+  const { t, locale, isRtl } = useI18n();
   const [statusData, setStatusData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -42,11 +44,11 @@ export default function StatusPage() {
       {/* Back Link & Header */}
       <div>
         <Link
-          href="/"
+          href="/dashboard"
           className="inline-flex items-center gap-1.5 text-xs text-[#8A8F98] hover:text-[#EEEEEE] transition mb-3"
         >
-          <ArrowLeft className="h-3.5 w-3.5" />
-          <span>Back to Job Board</span>
+          {isRtl ? <ArrowRight className="h-3.5 w-3.5" /> : <ArrowLeft className="h-3.5 w-3.5" />}
+          <span>{locale === 'ar' ? 'العودة إلى لوحة الوظائف' : 'Back to Job Board'}</span>
         </Link>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
