@@ -28,12 +28,55 @@ export interface Translations {
     companyDescP2: string;
     servicesTitle: string;
     servicesSubtitle: string;
-    serviceNexusTitle: string;
-    serviceNexusDesc: string;
-    serviceOrbitTitle: string;
-    serviceOrbitDesc: string;
-    serviceFlowXTitle: string;
-    serviceFlowXDesc: string;
+
+    // Alaris FlowX
+    flowX: {
+      title: string;
+      category: string;
+      tagline: string;
+      features: Array<{
+        title: string;
+        desc: string;
+      }>;
+      ctaTry: string;
+    };
+
+    // Alaris Nexus
+    nexus: {
+      title: string;
+      category: string;
+      tagline: string;
+      desc: string;
+      subline: string;
+      pills: string[];
+      stats: Array<{
+        label: string;
+        val: string;
+      }>;
+      ctaTry: string;
+    };
+
+    // Alaris Orbit
+    orbit: {
+      title: string;
+      category: string;
+      tagline: string;
+      intro: string;
+      features: Array<{
+        title: string;
+        desc: string;
+      }>;
+      overviewHeading: string;
+      overviewSub: string;
+      overviewDesc: string;
+      specs: Array<{
+        label: string;
+        val: string;
+      }>;
+      ctaTry: string;
+      ctaInquire: string;
+    };
+
     clutchSpotlightTitle: string;
     clutchSpotlightDesc: string;
     clutchSpotlightCta: string;
@@ -154,15 +197,94 @@ export const translations: Record<Locale, Translations> = {
         'Our product suite bridges complex data gathering with intuitive interfaces, designed with surgical precision and uncompromising visual elegance.',
       servicesTitle: 'Core Capabilities & Services',
       servicesSubtitle: 'Pillars of the Alaris technology architecture.',
-      serviceNexusTitle: 'Alaris Nexus',
-      serviceNexusDesc:
-        'Unified connectivity and intelligent API orchestration layer powering seamless cross-platform workflows and data pipelines.',
-      serviceOrbitTitle: 'Alaris Orbit',
-      serviceOrbitDesc:
-        'Continuous data ingestion, real-time telemetry, and automated web indexing engine built for high-throughput discovery.',
-      serviceFlowXTitle: 'Alaris FlowX',
-      serviceFlowXDesc:
-        'Next-generation asynchronous execution pipeline and event-driven automation framework for scalable task orchestration.',
+
+      // FlowX English
+      flowX: {
+        title: 'Alaris FlowX',
+        category: '01 // RESTAURANT OPERATING SYSTEM',
+        tagline: 'Engineered specifically for speed, precision, and operational clarity in restaurants.',
+        features: [
+          {
+            title: 'Interactive Floor & Table Plan',
+            desc: 'Real-time table status monitoring, seating capacity overview, and seamless order reassignments.',
+          },
+          {
+            title: 'High-Speed POS & Order Creation',
+            desc: 'Category filtering, instant menu lookup, custom kitchen modifier notes, and direct dispatch.',
+          },
+          {
+            title: 'Kitchen Display System (KDS)',
+            desc: 'Live chef ticket pipeline with real-time status updates (Preparing, Ready, Served).',
+          },
+          {
+            title: 'Inventory & Stock Depletion',
+            desc: 'Raw ingredient stock tracking, minimum threshold alerts, and automated recipe consumption logs.',
+          },
+          {
+            title: 'Payments, Settlements & Invoicing',
+            desc: 'Multi-mode cash, card, and digital wallet checkout with discount handling, refunds, and receipt printing.',
+          },
+          {
+            title: 'Role-Based Access Control',
+            desc: 'Granular permissions for managers, waitstaff, chefs, cashiers, and stock controllers.',
+          },
+        ],
+        ctaTry: 'Try FlowX Live',
+      },
+
+      // Nexus English
+      nexus: {
+        title: 'Alaris Nexus',
+        category: '02 // E-COMMERCE & COMMERCE ENGINE',
+        tagline: 'Everything you sell, unified in one powerful hub.',
+        desc: 'A modern e-commerce and sales platform built to orchestrate products, orders, customers, payments, and multi-channel inventory with extraordinary speed and high efficiency.',
+        subline: 'Fast sales engine and integrated inventory management network',
+        pills: ['Unified Sales Catalog', 'Instant Digital Checkout', 'Real-Time Stock Sync'],
+        stats: [
+          { label: 'Order Capacity', val: '+50K / Day' },
+          { label: 'Checkout Speed', val: '< 1 Second' },
+          { label: 'Product Sync', val: 'Real-Time' },
+        ],
+        ctaTry: 'Try Nexus Live',
+      },
+
+      // Orbit English
+      orbit: {
+        title: 'Alaris Orbit',
+        category: '03 // VENUE MANAGEMENT & TREASURY INTELLIGENCE',
+        tagline: 'Core Platform Capabilities',
+        intro: 'Engineered from scratch to guarantee effortless venue management, rigorous financial ledgers, and live treasury metrics.',
+        features: [
+          {
+            title: 'Reservation & Venue Tracking',
+            desc: 'Hall and venue scheduling with customer profiles, booking lifecycles (Confirmed, Completed, Cancelled), and collision-free availability checks.',
+          },
+          {
+            title: 'Expenses & Financial Ledgers',
+            desc: 'Granular operational cost tracking alongside revenue streams with real-time net P&L and profit margin analytics.',
+          },
+          {
+            title: 'Capital Allocation & Treasury',
+            desc: 'Track investment injections and capital, monitor liquidity reserves, and maintain a real-time view of available treasury funds.',
+          },
+          {
+            title: 'Automated Audit & Reporting',
+            desc: 'Generate and export financial statements in PDF and Excel in Arabic and English with role-based security enforcement.',
+          },
+        ],
+        overviewHeading: 'Platform Architecture Overview',
+        overviewSub: 'Engineered for Operational Excellence',
+        overviewDesc:
+          'Alaris Orbit was designed by Alaris Space to establish complete synergy between venue reservations and live financial analytics. Rather than relying on disconnected tools, Orbit provides a unified control plane that automatically synchronizes operational events with financial records.',
+        specs: [
+          { label: 'Full REST API', val: 'ASP.NET Core REST Server' },
+          { label: 'Relational Database', val: 'SQL Server with ACID Ledger Guarantees' },
+          { label: 'Role Permissions', val: 'Granular Admin & Executive System Controls' },
+        ],
+        ctaTry: 'Try Orbit Live',
+        ctaInquire: 'Inquire About Product',
+      },
+
       clutchSpotlightTitle: 'Alaris Clutch in Action',
       clutchSpotlightDesc:
         'A fully free, live demonstration of our autonomous scraping engine: continuously crawling LinkedIn, Wuzzuf, Remotive, Arbeitnow, and Indeed for tech talent.',
@@ -275,15 +397,94 @@ export const translations: Record<Locale, Translations> = {
         'تربط منتجاتنا بين جمع البيانات المعقدة والواجهات المتقنة سهلة الاستخدام، والمصممة بدقة هندسية عالية وتناغم بصري استثنائي.',
       servicesTitle: 'القدرات والخدمات الأساسية',
       servicesSubtitle: 'الركائز التكنولوجية لبنية ألاريس التقنية.',
-      serviceNexusTitle: 'ألاريس نيكسوس (Alaris Nexus)',
-      serviceNexusDesc:
-        'طبقة ربط موحدة وتنسيق واجهات برمجية ذكية تدعم تدفقات العمل المتكاملة وخطوط البيانات عبر المنصات المختلفة.',
-      serviceOrbitTitle: 'ألاريس أوربت (Alaris Orbit)',
-      serviceOrbitDesc:
-        'محرك استيعاب بيانات مستمر وتتبع فوري وفهرسة تلقائية لمصادر الويب مصمم للاكتشاف فائق الإنتاجية.',
-      serviceFlowXTitle: 'ألاريس فلو إكس (Alaris FlowX)',
-      serviceFlowXDesc:
-        'مسار تنفيذ غير متزامن متقدم وإطار عمل لأتمتة المهام القائمة على الأحداث لإدارة المهام على نطاق واسع.',
+
+      // FlowX Arabic
+      flowX: {
+        title: 'ألاريس فلو إكس (Alaris FlowX)',
+        category: '01 // نظام إدارة المطاعم المتكامل',
+        tagline: 'مصمم خصيصاً لتحقيق السرعة والدقة والوضوح التشغيلي للمطاعم.',
+        features: [
+          {
+            title: 'شبكة طاولات تفاعلية',
+            desc: 'متابعة فورية لحالة الطاولات، سعة المقاعد، ونقل الطلبات بين الطاولات بسلاسة.',
+          },
+          {
+            title: 'نقاط بيع سريعة وإنشاء طلبات',
+            desc: 'تصفية حسب التصنيفات، بحث سريع في القائمة، ملاحظات خاصة، وإرسال فوري للمطبخ.',
+          },
+          {
+            title: 'شاشة المطبخ (KDS)',
+            desc: 'متابعة فورية لتذاكر الطهاة مع تحديث حالة كل عنصر (جاري التحضير، جاهز، تم التقديم).',
+          },
+          {
+            title: 'إدارة المخزون والتنبيهات',
+            desc: 'تتبع مخزون المكونات الخام، حدود المخزون الأدنى، وسجلات الاستهلاك التلقائي.',
+          },
+          {
+            title: 'الدفع والدفعيات والفواتير',
+            desc: 'دفع نقدي، بطاقات ائتمانية، ومحافظ رقمية، تطبيق الخصومات، الاسترداد، وطباعة الفواتير.',
+          },
+          {
+            title: 'إدارة الصلاحيات والأدوار',
+            desc: 'تحديد دقيق لصلاحيات المدراء، الخدام، الطهاة، أمناء الصندوق، ومسؤولي المخزون.',
+          },
+        ],
+        ctaTry: 'جرّب المنتج',
+      },
+
+      // Nexus Arabic
+      nexus: {
+        title: 'ألاريس نيكسوس (Alaris Nexus)',
+        category: '02 // منصة التجارة والمبيعات الموحدة',
+        tagline: 'كل حاجة بتبيعها في مكان واحد قوي.',
+        desc: 'منصة تجارة إلكترونية ومبيعات حديثة مصممة لإدارة المنتجات، الأوردرات، والعملاء، والمدفوعات والمخزون بكفاءة عالية وسرعة خيالية.',
+        subline: 'محرك مبيعات سريع وشبكة إدارة مخزون متكاملة',
+        pills: ['كتالوج مبيعات موحد', 'دفع إلكتروني سريع', 'مزامنة المخزون لحظيًا'],
+        stats: [
+          { label: 'طاقة الأوردرات', val: '+٥٠ ألف/يومياً' },
+          { label: 'سرعة الدفع', val: 'أقل من ثانية' },
+          { label: 'مزامنة المنتجات', val: 'فورية' },
+        ],
+        ctaTry: 'جرّب المنتج',
+      },
+
+      // Orbit Arabic
+      orbit: {
+        title: 'ألاريس أوربت (Alaris Orbit)',
+        category: '03 // إدارة القاعات والخزينة المالية المباشرة',
+        tagline: 'القدرات والإمكانيات الرئيسية',
+        intro: 'صُمم النظام من الصفر لضمان سهولة تشغيل القاعات ودقة السجلات المالية ومؤشرات الخزينة المباشرة.',
+        features: [
+          {
+            title: 'إدارة وتتبع الحجوزات',
+            desc: 'جدولة حجوزات القاعات والمواقع مع متابعة بيانات العملاء وحالات الحجز (مؤكد، مكتمل، ملغى) وفحص التوفر لمنع التعارض.',
+          },
+          {
+            title: 'المصروفات والسجلات المالية',
+            desc: 'تسجيل وتصنيف التكاليف التشغيلية بجانب الإيرادات وتتبع صافي الأرباح والخسائر ونسب هامش الربح مباشرة.',
+          },
+          {
+            title: 'إدارة وتخصيص رأس المال',
+            desc: 'إدارة ضخ الاستثمارات ورأس المال، تتبع احتياطيات السيولة، ومراقبة توزيع الأصول ورصيد الخزينة المتاح.',
+          },
+          {
+            title: 'التقارير والتحليلات المؤتمتة',
+            desc: 'إنشاء وتصدير التقارير المالية بصيغ PDF و Excel باللغتين العربية والإنجليزية مع تطبيق صلاحيات أمان الأدوار.',
+          },
+        ],
+        overviewHeading: 'نظرة عامة على المنصة',
+        overviewSub: 'صُمم لتحقيق التميز التشغيلي',
+        overviewDesc:
+          'تم تصميم منصة ألاريس أوربيت بواسطة شركة Alaris Space للربط الكامل بين إدارة الحجوزات والتحليلات المالية المباشرة، بدلاً من استخدام أدوات منفصلة، توفر المنصة واجهة مجمعة تُحدث السجلات المالية تلقائياً.',
+        specs: [
+          { label: 'واجهة برمجة كاملة', val: 'خادم ASP.NET Core REST' },
+          { label: 'قاعدة بيانات علاقات', val: 'SQL Server وحماية السجلات' },
+          { label: 'صلاحيات الأدوار', val: 'تحكم مسؤول ومدير النظام' },
+        ],
+        ctaTry: 'جرّب المنتج',
+        ctaInquire: 'الاستفسار عن هذا المنتج',
+      },
+
       clutchSpotlightTitle: 'ألاريس كلاتش أثناء العمل',
       clutchSpotlightDesc:
         'عرض عملي ومجاني بالكامل لمحرك الفهرسة المستمر لدينا: يراقب باستمرار LinkedIn وWuzzuf وRemotive وArbeitnow وIndeed لأحدث الوظائف التقنية.',

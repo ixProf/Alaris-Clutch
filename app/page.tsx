@@ -7,16 +7,20 @@ import { Button } from '@/components/Button';
 import {
   ArrowRight,
   ExternalLink,
-  Layers,
   Network,
   Orbit,
   Workflow,
-  Sparkles,
-  ShieldCheck,
-  Cpu,
-  Database,
-  ArrowUpRight,
   Briefcase,
+  CheckCircle2,
+  Server,
+  Zap,
+  TrendingUp,
+  Clock,
+  ShieldCheck,
+  Building2,
+  Utensils,
+  ShoppingBag,
+  MessageSquare,
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -95,8 +99,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 3. SERVICES SECTION (Nexus, Orbit, FlowX) */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8">
+      {/* 3. DETAILED SERVICES SHOWCASE */}
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-12">
         <div className="text-center sm:text-start max-w-2xl space-y-2">
           <span className="text-xs font-semibold uppercase tracking-widest text-[#a78bfa]">
             {t.landing.servicesTitle}
@@ -106,82 +110,234 @@ export default function LandingPage() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Service 1: Alaris Nexus */}
-          <div className="group relative rounded-xl bg-[#151619] border border-[rgba(255,255,255,0.08)] p-7 transition-all duration-200 hover:bg-[#18191E] hover:border-[rgba(255,255,255,0.16)] flex flex-col justify-between">
-            <div className="space-y-4">
-              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-[#1F2024] border border-[rgba(255,255,255,0.08)] text-[#a78bfa] group-hover:scale-105 transition-transform">
-                <Network className="h-5 w-5" />
+        <div className="space-y-8">
+          {/* SERVICE 1: ALARIS FLOWX */}
+          <div className="rounded-2xl bg-[#151619] border border-[rgba(255,255,255,0.08)] p-6 sm:p-10 lg:p-12 space-y-8 transition-all hover:border-[rgba(255,255,255,0.14)]">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-[rgba(255,255,255,0.06)]">
+              <div className="space-y-2 max-w-3xl">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#1F2024] border border-[rgba(255,255,255,0.08)] text-[#8b5cf6]">
+                    <Workflow className="h-5 w-5" />
+                  </div>
+                  <span className="font-mono text-xs text-[#8b5cf6] uppercase tracking-wider">
+                    {t.landing.flowX.category}
+                  </span>
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-bold text-[#EEEEEE] tracking-tight">
+                  {t.landing.flowX.title}
+                </h3>
+                <p className="text-sm sm:text-base text-[#8A8F98] leading-relaxed">
+                  {t.landing.flowX.tagline}
+                </p>
               </div>
 
-              <h3 className="text-lg font-bold text-[#EEEEEE] tracking-tight">
-                {t.landing.serviceNexusTitle}
-              </h3>
-
-              {/* TODO: replace with real service description */}
-              <p className="text-xs sm:text-sm text-[#8A8F98] leading-relaxed">
-                {t.landing.serviceNexusDesc}
-              </p>
+              {/* Action Button */}
+              <div className="shrink-0 flex items-center gap-3">
+                <a
+                  href="https://client-cyan-alpha-16.vercel.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button variant="primary" size="md" className="gap-2">
+                    <span>{t.landing.flowX.ctaTry}</span>
+                    <ExternalLink className="h-3.5 w-3.5" />
+                  </Button>
+                </a>
+              </div>
             </div>
 
-            <div className="pt-6 mt-6 border-t border-[rgba(255,255,255,0.06)] flex items-center justify-between text-xs text-[#8A8F98]">
-              <span className="font-mono text-[11px] text-[#5E6AD2]">01 // ORCHESTRATION</span>
-              <span className="inline-flex items-center gap-1 group-hover:text-[#EEEEEE] transition-colors">
-                <span>Explore</span>
-                <ArrowUpRight className="h-3 w-3" />
-              </span>
+            {/* Core Capabilities Grid (6 items) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {t.landing.flowX.features.map((feat, idx) => (
+                <div
+                  key={idx}
+                  className="rounded-xl bg-[#111215] border border-[rgba(255,255,255,0.06)] p-5 space-y-2 hover:border-[rgba(255,255,255,0.12)] transition-colors"
+                >
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-[#8b5cf6] shrink-0" />
+                    <h4 className="text-sm font-semibold text-[#EEEEEE]">
+                      {feat.title}
+                    </h4>
+                  </div>
+                  <p className="text-xs text-[#8A8F98] leading-relaxed">
+                    {feat.desc}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Service 2: Alaris Orbit */}
-          <div className="group relative rounded-xl bg-[#151619] border border-[rgba(255,255,255,0.08)] p-7 transition-all duration-200 hover:bg-[#18191E] hover:border-[rgba(255,255,255,0.16)] flex flex-col justify-between">
-            <div className="space-y-4">
-              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-[#1F2024] border border-[rgba(255,255,255,0.08)] text-[#5E6AD2] group-hover:scale-105 transition-transform">
-                <Orbit className="h-5 w-5" />
+          {/* SERVICE 2: ALARIS NEXUS */}
+          <div className="rounded-2xl bg-[#151619] border border-[rgba(255,255,255,0.08)] p-6 sm:p-10 lg:p-12 space-y-8 transition-all hover:border-[rgba(255,255,255,0.14)]">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-[rgba(255,255,255,0.06)]">
+              <div className="space-y-2 max-w-3xl">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#1F2024] border border-[rgba(255,255,255,0.08)] text-[#a78bfa]">
+                    <Network className="h-5 w-5" />
+                  </div>
+                  <span className="font-mono text-xs text-[#a78bfa] uppercase tracking-wider">
+                    {t.landing.nexus.category}
+                  </span>
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-bold text-[#EEEEEE] tracking-tight">
+                  {t.landing.nexus.title}
+                </h3>
+                <p className="text-base sm:text-lg font-medium text-[#EEEEEE] leading-relaxed">
+                  {t.landing.nexus.tagline}
+                </p>
+                <p className="text-xs sm:text-sm text-[#8A8F98] leading-relaxed">
+                  {t.landing.nexus.desc}
+                </p>
               </div>
 
-              <h3 className="text-lg font-bold text-[#EEEEEE] tracking-tight">
-                {t.landing.serviceOrbitTitle}
-              </h3>
-
-              {/* TODO: replace with real service description */}
-              <p className="text-xs sm:text-sm text-[#8A8F98] leading-relaxed">
-                {t.landing.serviceOrbitDesc}
-              </p>
+              {/* Action Button */}
+              <div className="shrink-0 flex items-center gap-3">
+                <a
+                  href="https://alaris-nexus.vercel.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button variant="primary" size="md" className="gap-2">
+                    <span>{t.landing.nexus.ctaTry}</span>
+                    <ExternalLink className="h-3.5 w-3.5" />
+                  </Button>
+                </a>
+              </div>
             </div>
 
-            <div className="pt-6 mt-6 border-t border-[rgba(255,255,255,0.06)] flex items-center justify-between text-xs text-[#8A8F98]">
-              <span className="font-mono text-[11px] text-[#5E6AD2]">02 // TELEMETRY</span>
-              <span className="inline-flex items-center gap-1 group-hover:text-[#EEEEEE] transition-colors">
-                <span>Explore</span>
-                <ArrowUpRight className="h-3 w-3" />
+            {/* Feature Pills */}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-semibold text-[#8A8F98] me-2">
+                {t.landing.nexus.subline}:
               </span>
+              {t.landing.nexus.pills.map((pill, idx) => (
+                <span
+                  key={idx}
+                  className="rounded-full bg-[#1F2024] border border-[rgba(255,255,255,0.08)] px-3 py-1 text-xs text-[#EEEEEE]"
+                >
+                  {pill}
+                </span>
+              ))}
+            </div>
+
+            {/* Stat Cards Highlight */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {t.landing.nexus.stats.map((st, idx) => (
+                <div
+                  key={idx}
+                  className="rounded-xl bg-[#111215] border border-[rgba(255,255,255,0.06)] p-6 space-y-1.5 text-center sm:text-start"
+                >
+                  <span className="text-xs font-medium text-[#8A8F98]">
+                    {st.label}
+                  </span>
+                  <p className="text-2xl sm:text-3xl font-bold font-mono text-[#EEEEEE] tracking-tight">
+                    {st.val}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Service 3: Alaris FlowX */}
-          <div className="group relative rounded-xl bg-[#151619] border border-[rgba(255,255,255,0.08)] p-7 transition-all duration-200 hover:bg-[#18191E] hover:border-[rgba(255,255,255,0.16)] flex flex-col justify-between">
-            <div className="space-y-4">
-              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-[#1F2024] border border-[rgba(255,255,255,0.08)] text-[#8b5cf6] group-hover:scale-105 transition-transform">
-                <Workflow className="h-5 w-5" />
+          {/* SERVICE 3: ALARIS ORBIT */}
+          <div className="rounded-2xl bg-[#151619] border border-[rgba(255,255,255,0.08)] p-6 sm:p-10 lg:p-12 space-y-8 transition-all hover:border-[rgba(255,255,255,0.14)]">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-[rgba(255,255,255,0.06)]">
+              <div className="space-y-2 max-w-3xl">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#1F2024] border border-[rgba(255,255,255,0.08)] text-[#5E6AD2]">
+                    <Orbit className="h-5 w-5" />
+                  </div>
+                  <span className="font-mono text-xs text-[#5E6AD2] uppercase tracking-wider">
+                    {t.landing.orbit.category}
+                  </span>
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-bold text-[#EEEEEE] tracking-tight">
+                  {t.landing.orbit.title}
+                </h3>
+                <p className="text-sm sm:text-base text-[#8A8F98] leading-relaxed">
+                  {t.landing.orbit.intro}
+                </p>
               </div>
 
-              <h3 className="text-lg font-bold text-[#EEEEEE] tracking-tight">
-                {t.landing.serviceFlowXTitle}
-              </h3>
+              {/* Action Buttons: Live Demo + Inquire */}
+              <div className="shrink-0 flex flex-wrap items-center gap-3">
+                <a
+                  href="https://alarisorbit-one.vercel.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button variant="primary" size="md" className="gap-2">
+                    <span>{t.landing.orbit.ctaTry}</span>
+                    <ExternalLink className="h-3.5 w-3.5" />
+                  </Button>
+                </a>
 
-              {/* TODO: replace with real service description */}
-              <p className="text-xs sm:text-sm text-[#8A8F98] leading-relaxed">
-                {t.landing.serviceFlowXDesc}
-              </p>
+                <a
+                  href="https://alarisorbit-one.vercel.app/#contact"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button variant="secondary" size="md" className="gap-2">
+                    <MessageSquare className="h-3.5 w-3.5 text-[#8A8F98]" />
+                    <span>{t.landing.orbit.ctaInquire}</span>
+                  </Button>
+                </a>
+              </div>
             </div>
 
-            <div className="pt-6 mt-6 border-t border-[rgba(255,255,255,0.06)] flex items-center justify-between text-xs text-[#8A8F98]">
-              <span className="font-mono text-[11px] text-[#5E6AD2]">03 // AUTOMATION</span>
-              <span className="inline-flex items-center gap-1 group-hover:text-[#EEEEEE] transition-colors">
-                <span>Explore</span>
-                <ArrowUpRight className="h-3 w-3" />
-              </span>
+            {/* Core Capabilities (4 items) */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-[#5E6AD2]">
+                {t.landing.orbit.tagline}
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {t.landing.orbit.features.map((feat, idx) => (
+                  <div
+                    key={idx}
+                    className="rounded-xl bg-[#111215] border border-[rgba(255,255,255,0.06)] p-5 space-y-2 hover:border-[rgba(255,255,255,0.12)] transition-colors"
+                  >
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="h-4 w-4 text-[#5E6AD2] shrink-0" />
+                      <h5 className="text-sm font-semibold text-[#EEEEEE]">
+                        {feat.title}
+                      </h5>
+                    </div>
+                    <p className="text-xs text-[#8A8F98] leading-relaxed">
+                      {feat.desc}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Platform Overview Subsection */}
+            <div className="rounded-xl bg-[#111215] border border-[rgba(255,255,255,0.06)] p-6 sm:p-8 space-y-4">
+              <div className="space-y-1">
+                <span className="text-[11px] font-mono uppercase text-[#a78bfa]">
+                  {t.landing.orbit.overviewSub}
+                </span>
+                <h4 className="text-lg font-bold text-[#EEEEEE]">
+                  {t.landing.orbit.overviewHeading}
+                </h4>
+              </div>
+              <p className="text-xs sm:text-sm text-[#8A8F98] leading-relaxed">
+                {t.landing.orbit.overviewDesc}
+              </p>
+
+              {/* Technical Specs Tags */}
+              <div className="pt-4 border-t border-[rgba(255,255,255,0.06)] flex flex-wrap gap-2.5">
+                {t.landing.orbit.specs.map((spec, idx) => (
+                  <div
+                    key={idx}
+                    className="inline-flex items-center gap-1.5 rounded-md bg-[#1F2024] border border-[rgba(255,255,255,0.08)] px-3 py-1.5 text-xs"
+                  >
+                    <span className="text-[#8A8F98]">{spec.label}:</span>
+                    <span className="font-medium text-[#EEEEEE]">{spec.val}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
