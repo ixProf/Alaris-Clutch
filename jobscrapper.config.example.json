@@ -1,0 +1,54 @@
+{
+  "_comment": "Junior .NET / ASP.NET Core backend job scraper configuration",
+  "profile": "egypt-junior",
+  "profiles": {
+    "egypt-junior": {
+      "experience": {
+        "min": 0,
+        "max": 2
+      },
+      "maxAgeDays": 90,
+      "requireFullDescription": false,
+      "remoteOnly": false
+    }
+  },
+  "sources": {
+    "linkedin": {
+      "enabled": true,
+      "maxPages": 10
+    },
+    "wuzzuf": {
+      "enabled": true,
+      "maxPages": 1
+    },
+    "indeed": {
+      "enabled": true,
+      "maxPages": 1
+    },
+    "glassdoor": {
+      "enabled": false
+    },
+    "remoteok": {
+      "enabled": false
+    },
+    "arbeitnow": {
+      "enabled": true,
+      "maxPages": 5
+    },
+    "remotive": {
+      "enabled": true,
+      "maxPages": 1
+    }
+  },
+  "experience": {
+    "min": 0,
+    "max": 2
+  },
+  "email": {
+    "to": "",
+    "sendAfterScrape": false
+  },
+  "schedule": {
+    "everyHours": 4
+  }
+}

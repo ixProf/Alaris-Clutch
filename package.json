@@ -1,0 +1,51 @@
+{
+  "name": "jobscrapper",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Autonomous Node.js backend job scraper (LinkedIn, Wuzzuf, Indeed, Glassdoor)",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "worker": "tsx worker/index.ts",
+    "worker:once": "tsx worker/index.ts --once",
+    "scrape": "node apps/cli/index.js",
+    "export": "node apps/cli/export.js",
+    "refilter": "node apps/cli/refilter.js",
+    "backfill": "node apps/cli/backfill.js",
+    "test": "node --test test/**/*.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "iconv-lite": "^0.7.3"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^26.5.0",
+    "@types/node-cron": "^3.0.11",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "autoprefixer": "^10.5.5",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.43.0",
+    "next": "^16.3.4",
+    "node-cron": "^4.6.0",
+    "postcss": "^8.5.28",
+    "prisma": "^6.19.3",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.13",
+    "typescript": "^5.9.3",
+    "xlsx": "^0.18.5"
+  }
+}

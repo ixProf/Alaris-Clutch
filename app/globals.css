@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0E0F11;
+  --foreground: #EEEEEE;
+  --card: #151619;
+  --popover: #1C1D21;
+  --sidebar: #111215;
+  --muted: #1F2024;
+  --muted-foreground: #8A8F98;
+  --muted-foreground-subtle: #9499A3;
+  --primary: #5E6AD2;
+  --destructive: #E05252;
+  --border: rgba(255, 255, 255, 0.08);
+  --accent-nebula: #a78bfa;
+  --accent-cosmos: #8b5cf6;
+  --accent-stardust: #7c3aed;
+}
+
+body {
+  background-color: #0E0F11;
+  color: #EEEEEE;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Restrained Minimal Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0E0F11;
+}
+::-webkit-scrollbar-thumb {
+  background: #1F2024;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2D3039;
+}
+
+/* Crisp Clean Card */
+.surface-card {
+  background-color: #151619;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+}
+
+.surface-card:hover {
+  background-color: #18191E;
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+/* Subtle One-Point Accent Gradient (reserved for single hero mark or subtle badge) */
+.accent-gradient {
+  background: linear-gradient(135deg, #a78bfa 0%, #5E6AD2 100%);
+}

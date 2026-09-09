@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Job {
+  id                  String    @id @default(cuid())
+  title               String
+  company             String?
+  location            String?
+  remote              Boolean   @default(false)
+  employmentType      String?
+  experienceMin       Int?
+  experienceMax       Int?
+  description         String?
+  requirements        String?
+  salary              String?
+  technologies        String    @default("[]") // JSON array of string tags
+  categories          String    @default("[]") // JSON array of category names
+  source              String
+  sourceJobId         String?
+  url                 String?
+  canonicalUrl        String?
+  postedAt            DateTime?
+  scrapedAt           DateTime  @default(now())
+  fingerprint         String?
+  relevance           String?   @default("medium")
+
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  @@unique([source, sourceJobId])
+  @@index([canonicalUrl])
+  @@index([postedAt])
+  @@index([remote])
+  @@index([source])
+  @@index([experienceMin, experienceMax])
+  @@map("jobs")
+}
+
+model ScrapeRun {
+  id                  String    @id @default(cuid())
+  startedAt           DateTime  @default(now())
+  finishedAt          DateTime?
+  status              String    @default("RUNNING") // RUNNING, SUCCESS, FAILED
+  summary             String    @default("{}")      // JSON object with found, saved, duplicates, filtered
+
+  createdAt           DateTime  @default(now())
+  @@map("scrape_runs")
+}
+
+model SourceStatus {
+  id                  String    @id @default(cuid())
+  sourceKey           String    @unique
+  name                String
+  lastScrapedAt       DateTime?
+  lastJobCount        Int       @default(0)
+  status              String    @default("idle")    // idle, scraping, healthy, degraded, error
+  lastError           String?
+  updatedAt           DateTime  @updatedAt
+
+  @@map("source_status")
+}
