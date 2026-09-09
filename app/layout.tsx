@@ -8,6 +8,15 @@ export const metadata: Metadata = {
   title: 'Alaris — Intelligent Software & Data Infrastructure | Alaris Clutch',
   description:
     'Alaris builds high-performance intelligence tools and autonomous data infrastructure, including Alaris Nexus, Alaris Orbit, Alaris FlowX, and the Alaris Clutch tech job intelligence platform.',
+  icons: {
+    icon: [
+      { url: '/icon.png', sizes: '32x32', type: 'image/png' },
+      { url: '/logo.png', sizes: '192x192', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
 };
 
 export default function RootLayout({

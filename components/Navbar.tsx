@@ -21,8 +21,12 @@ export function Navbar() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Brand Logo & Context */}
         <Link href="/" className="flex items-center gap-3 shrink-0">
-          <div className="flex h-9 w-9 items-center justify-center rounded-md bg-[#1F2024] border border-[rgba(255,255,255,0.08)]">
-            <Layers className="h-4 w-4 text-[#EEEEEE]" />
+          <div className="relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md border border-[rgba(255,255,255,0.08)] bg-[#1F2024]">
+            <img
+              src="/logo.png"
+              alt="Alaris Clutch"
+              className="h-full w-full object-cover"
+            />
           </div>
           <div className="flex flex-col">
             <span className="text-base font-semibold tracking-tight text-[#EEEEEE]">

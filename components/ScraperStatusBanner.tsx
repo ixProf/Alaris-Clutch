@@ -23,8 +23,8 @@ export function ScraperStatusBanner({
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-lg bg-[#151619] border border-[rgba(255,255,255,0.08)] p-4 sm:p-5">
       <div className="flex items-center gap-3.5">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[#1F2024] border border-[rgba(255,255,255,0.08)]">
-          <Activity className="h-4 w-4 text-[#EEEEEE]" />
+        <div className="relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md border border-[rgba(255,255,255,0.08)] bg-[#1F2024]">
+          <img src="/logo.png" alt="Alaris Clutch" className="h-full w-full object-cover" />
         </div>
         <div>
           <h2 className="text-sm font-semibold text-[#EEEEEE] flex items-center gap-2">

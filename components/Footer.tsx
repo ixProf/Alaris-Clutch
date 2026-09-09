@@ -11,7 +11,10 @@ export function Footer() {
     <footer className="border-t border-[rgba(255,255,255,0.08)] bg-[#0E0F11] py-8 text-xs text-[#8A8F98]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-start">
-          <span className="font-semibold text-[#EEEEEE]">{t.nav.brand}</span>
+          <div className="flex items-center gap-2">
+            <img src="/logo.png" alt="Alaris Clutch" className="h-5 w-5 rounded object-cover" />
+            <span className="font-semibold text-[#EEEEEE]">{t.nav.brand}</span>
+          </div>
           <span className="hidden sm:inline">•</span>
           <span>{t.landing.footerSub}</span>
         </div>

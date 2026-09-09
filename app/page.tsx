@@ -348,8 +348,8 @@ export default function LandingPage() {
         <div className="relative rounded-2xl bg-gradient-to-br from-[#1F2024] via-[#151619] to-[#0E0F11] border border-[rgba(255,255,255,0.1)] p-8 sm:p-12 lg:p-14 overflow-hidden">
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
             <div className="max-w-2xl space-y-3">
-              <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#5E6AD2]">
-                <Briefcase className="h-3.5 w-3.5" />
+              <div className="inline-flex items-center gap-2 rounded-md bg-[#111215] border border-[rgba(255,255,255,0.08)] px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-[#5E6AD2]">
+                <img src="/logo.png" alt="Alaris Clutch Logo" className="h-4 w-4 rounded-sm object-cover" />
                 <span>Featured Autonomous System</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold text-[#EEEEEE] tracking-tight">
