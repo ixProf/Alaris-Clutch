@@ -8,12 +8,11 @@
     "packages/*"
   ],
   "scripts": {
-    "postinstall": "prisma generate",
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
-    "worker": "tsx worker/index.ts",
-    "worker:once": "tsx worker/index.ts --once",
+    "worker": "prisma generate && tsx worker/index.ts",
+    "worker:once": "prisma generate && tsx worker/index.ts --once",
     "scrape": "node apps/cli/index.js",
     "export": "node apps/cli/export.js",
     "refilter": "node apps/cli/refilter.js",
