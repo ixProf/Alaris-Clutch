@@ -69,9 +69,12 @@ function seniorityFieldDecision(hay) {
 
 function experienceDecision(job, maxAllowed = 2, _profile = {}) {
   const hay = [job.title, job.description, job.requirements].filter(Boolean).join('\n').toLowerCase();
+  const parsed = parseExperience(hay);
+  if (_profile && _profile.allowAllExperience === true) {
+    return { accept: true, reason: 'all experience levels accepted', parsed };
+  }
   const senField = seniorityFieldDecision(hay);
   if (senField) return { accept: false, reason: `seniority level: ${senField}`, parsed: { min: null, max: null, explicit: true } };
-  const parsed = parseExperience(hay);
   const titleLow = String(job.title || '').toLowerCase();
   const seniorHit = SENIOR_TITLE_RE.test(String(job.title || '')) || SENIOR_TITLES.some((s) => new RegExp(`\\b${s.replace('.', '\\.')}\\b`).test(hay.slice(0, 500)));
   if (parsed.explicit && parsed.max !== null && parsed.max > maxAllowed) {

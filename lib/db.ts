@@ -244,56 +244,95 @@ class DatabaseBridge {
     }
   }
 
+  public async isProcessed(source: string, idOrUrl: string): Promise<boolean> {
+    try {
+      const val = String(idOrUrl).trim();
+      if (!val) return false;
+      const found = await prisma.job.findFirst({
+        where: {
+          source,
+          OR: [
+            { sourceJobId: val },
+            { canonicalUrl: val },
+            { url: val },
+          ],
+        },
+        select: { id: true },
+      });
+      return !!found;
+    } catch (e) {
+      console.error('isProcessed error:', e);
+      return false;
+    }
+  }
+
   public async upsertJob(job: Partial<JobRecord>): Promise<'new' | 'updated' | 'duplicate'> {
     const cats =
-      job.categories ||
-      classifyCategories({
-        title: job.title,
-        description: job.description,
-        requirements: job.requirements,
-        technologies: job.technologies,
-      });
+      job.categories && job.categories.length > 0
+        ? job.categories
+        : classifyCategories({
+            title: job.title,
+            description: job.description,
+            requirements: job.requirements,
+            technologies: job.technologies,
+          });
 
     const techsJson = JSON.stringify(job.technologies || []);
     const catsJson = JSON.stringify(cats);
 
     try {
       const source = job.source || 'web';
-      const sourceJobId = job.sourceJobId || String(job.id || Math.random());
+      const sourceJobId = job.sourceJobId ? String(job.sourceJobId) : String(job.id || Math.random());
+      const canonicalUrl = job.canonicalUrl || job.url || null;
 
-      const existing = await prisma.job.findUnique({
+      // 1. Check by composite unique (source + sourceJobId)
+      let existing = await prisma.job.findUnique({
         where: {
           source_sourceJobId: { source, sourceJobId },
         },
       });
 
+      // 2. Fallback check by canonicalUrl if not found
+      if (!existing && canonicalUrl) {
+        existing = await prisma.job.findFirst({
+          where: { canonicalUrl },
+        });
+      }
+
       if (!existing) {
+        let postedAtDate: Date | null = null;
+        if (job.postedAt) {
+          const t = new Date(job.postedAt);
+          if (!isNaN(t.getTime())) postedAtDate = t;
+        }
+
         await prisma.job.create({
           data: {
-            title: job.title || 'Untitled',
-            company: job.company,
-            location: job.location,
+            title: job.title || 'Untitled Role',
+            company: job.company || null,
+            location: job.location || null,
             remote: Boolean(job.remote),
-            employmentType: job.employmentType,
-            experienceMin: job.experienceMin,
-            experienceMax: job.experienceMax,
-            description: job.description,
-            requirements: job.requirements,
-            salary: job.salary,
+            employmentType: job.employmentType || null,
+            experienceMin: job.experienceMin !== undefined && job.experienceMin !== null ? Number(job.experienceMin) : null,
+            experienceMax: job.experienceMax !== undefined && job.experienceMax !== null ? Number(job.experienceMax) : null,
+            description: job.description || null,
+            requirements: job.requirements || null,
+            salary: job.salary || null,
             technologies: techsJson,
             categories: catsJson,
             source,
             sourceJobId,
-            url: job.url,
-            canonicalUrl: job.canonicalUrl,
-            postedAt: job.postedAt ? new Date(job.postedAt) : null,
-            fingerprint: job.fingerprint,
+            url: job.url || null,
+            canonicalUrl,
+            postedAt: postedAtDate,
+            fingerprint: job.fingerprint || null,
             relevance: job.relevance || 'medium',
           },
         });
         return 'new';
       }
 
+      // Check if fingerprint changed or data enriched
       if (existing.fingerprint !== job.fingerprint) {
         await prisma.job.update({
           where: { id: existing.id },
@@ -323,6 +362,7 @@ class DatabaseBridge {
     lastRun: any;
     sourceStatuses: any[];
     totalJobsCount: number;
+    systemSettings?: any;
   }> {
     try {
       const totalJobsCount = await prisma.job.count();
@@ -332,11 +372,13 @@ class DatabaseBridge {
       const sourceStatuses = await prisma.sourceStatus.findMany({
         orderBy: { name: 'asc' },
       });
+      const systemSettings = await this.getSystemSettings();
 
       return {
         lastRun,
         sourceStatuses,
         totalJobsCount,
+        systemSettings,
       };
     } catch {
       return {
@@ -386,6 +428,7 @@ class DatabaseBridge {
         create: {
           sourceKey: status.sourceKey,
           name: status.name,
+          enabled: true,
           lastScrapedAt: new Date(),
           lastJobCount: status.lastJobCount,
           status: status.status,
@@ -396,6 +439,96 @@ class DatabaseBridge {
       console.error('updateSourceStatus error:', e);
     }
   }
+
+  public async getEnabledSources(): Promise<string[]> {
+    try {
+      const rows = await prisma.sourceStatus.findMany({
+        where: { enabled: false },
+        select: { sourceKey: true },
+      });
+      const disabledKeys = new Set(rows.map((r) => r.sourceKey.toLowerCase()));
+
+      // Lazy load registry SOURCES
+      const { SOURCES } = require('@jobscrapper/sources/registry');
+      return SOURCES.map((s: any) => s.key).filter((key: string) => !disabledKeys.has(key.toLowerCase()));
+    } catch (e) {
+      console.error('getEnabledSources error, defaulting to all:', e);
+      // Fail-open: all sources enabled
+      try {
+        const { SOURCES } = require('@jobscrapper/sources/registry');
+        return SOURCES.map((s: any) => s.key);
+      } catch {
+        return ['linkedin', 'wuzzuf', 'indeed', 'glassdoor', 'remoteok', 'arbeitnow', 'remotive'];
+      }
+    }
+  }
+
+  public async updateSourceEnabled(sourceKey: string, enabled: boolean) {
+    try {
+      const { SOURCES } = require('@jobscrapper/sources/registry');
+      const found = SOURCES.find((s: any) => s.key.toLowerCase() === sourceKey.toLowerCase());
+      const name = found ? found.name : sourceKey;
+
+      return await prisma.sourceStatus.upsert({
+        where: { sourceKey: sourceKey.toLowerCase() },
+        update: { enabled },
+        create: {
+          sourceKey: sourceKey.toLowerCase(),
+          name,
+          enabled,
+          status: 'idle',
+        },
+      });
+    } catch (e) {
+      console.error('updateSourceEnabled error:', e);
+      throw e;
+    }
+  }
+
+  public async getSystemSettings() {
+    try {
+      let settings = await prisma.systemSettings.findUnique({
+        where: { id: 'default' },
+      });
+      if (!settings) {
+        settings = await prisma.systemSettings.create({
+          data: { id: 'default' },
+        });
+      }
+      return settings;
+    } catch (e) {
+      console.error('getSystemSettings error:', e);
+      return null;
+    }
+  }
+
+  public async updateSystemSettings(data: {
+    lastCompletedCycleAt?: Date | null;
+    lastManualTriggerAt?: Date | null;
+    pendingTrigger?: boolean;
+    triggerDepth?: number | null;
+    triggerType?: string | null;
+    triggerId?: string | null;
+    triggerCompletedAt?: Date | null;
+    triggerError?: string | null;
+    isRunning?: boolean;
+    currentRunStartedAt?: Date | null;
+  }) {
+    try {
+      return await prisma.systemSettings.upsert({
+        where: { id: 'default' },
+        update: data,
+        create: {
+          id: 'default',
+          ...data,
+        },
+      });
+    } catch (e) {
+      console.error('updateSystemSettings error:', e);
+      throw e;
+    }
+  }
 }
 
 export const dbBridge = new DatabaseBridge();
+

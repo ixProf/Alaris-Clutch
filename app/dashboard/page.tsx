@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { FilterSidebar, FilterState } from '@/components/FilterSidebar';
 import { JobCard } from '@/components/JobCard';
 import { JobDetailModal } from '@/components/JobDetailModal';
+import { ExportModal } from '@/components/ExportModal';
 import { ScraperStatusBanner } from '@/components/ScraperStatusBanner';
 import { Button } from '@/components/Button';
 import { JobRecord, JobsQueryResult } from '@/lib/db';
@@ -44,6 +45,7 @@ function DashboardContent() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedJob, setSelectedJob] = useState<JobRecord | null>(null);
+  const [isExportOpen, setIsExportOpen] = useState<boolean>(false);
 
   // Sync state to URL params for /dashboard
   const syncToUrl = useCallback(
@@ -135,12 +137,15 @@ function DashboardContent() {
               <span>{t.nav.status}</span>
             </Button>
           </Link>
-          <a href="/api/export?format=xlsx">
-            <Button variant="primary" size="sm" className="gap-1.5">
-              <Download className="h-3.5 w-3.5" />
-              <span>{t.nav.export}</span>
-            </Button>
-          </a>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => setIsExportOpen(true)}
+            className="gap-1.5"
+          >
+            <Download className="h-3.5 w-3.5" />
+            <span>{t.nav.export}</span>
+          </Button>
         </div>
       </div>
 
@@ -284,6 +289,15 @@ function DashboardContent() {
       <JobDetailModal
         job={selectedJob}
         onClose={() => setSelectedJob(null)}
+      />
+
+      {/* Scrape-then-Export Depth Modal */}
+      <ExportModal
+        isOpen={isExportOpen}
+        onClose={() => {
+          setIsExportOpen(false);
+          fetchJobs();
+        }}
       />
     </div>
   );

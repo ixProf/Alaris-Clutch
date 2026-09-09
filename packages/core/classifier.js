@@ -217,6 +217,22 @@ function classify(job, profile = {}) {
 
 
   // -----------------------------------------
+  // All Tech Scope (multi-category platform)
+  // -----------------------------------------
+
+  if (p.allowAllTech === true || p.titleScope === 'all-tech') {
+    const NON_TECH_RE = /\b(sales|account executive|copywriter|writer|writing|recruiter|customer support|support jedi|call center|telemarketer|cashier|waiter|driver|administrative|office manager)\b/i;
+    const DEV_OVERRIDE_RE = /\b(developer|engineer|programmer|architect|coder|devops|sre|full[\s-]?stack|backend|frontend|data scientist)\b/i;
+    if (NON_TECH_RE.test(title) && !DEV_OVERRIDE_RE.test(title)) {
+      return result('reject', 'non-tech job role', stackHits, 0);
+    }
+    const TECH_TITLE_RE = /developer|engineer|programmer|architect|coder|specialist|devops|sre|analyst|full[\s-]?stack|backend|frontend|front[\s-]?end|mobile|data|qa|tester|software|web developer/i;
+    if (TECH_TITLE_RE.test(low) || otherStacks.length > 0 || stackHits.length > 0 || titleDotnet || titleRole) {
+      return result('high', 'software/tech role', stackHits, 90, dotnetHits);
+    }
+  }
+
+  // -----------------------------------------
   // Title relevance
   // -----------------------------------------
 

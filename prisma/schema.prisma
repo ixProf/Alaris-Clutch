@@ -57,6 +57,7 @@ model SourceStatus {
   id                  String    @id @default(cuid())
   sourceKey           String    @unique
   name                String
+  enabled             Boolean   @default(true)
   lastScrapedAt       DateTime?
   lastJobCount        Int       @default(0)
   status              String    @default("idle")    // idle, scraping, healthy, degraded, error
@@ -65,3 +66,21 @@ model SourceStatus {
 
   @@map("source_status")
 }
+
+model SystemSettings {
+  id                    String    @id @default("default")
+  lastCompletedCycleAt  DateTime?
+  lastManualTriggerAt   DateTime?
+  pendingTrigger        Boolean   @default(false)
+  triggerDepth          Int?      @default(1)
+  triggerType           String?   // 'manual' | 'export'
+  triggerId             String?
+  triggerCompletedAt    DateTime?
+  triggerError          String?
+  isRunning             Boolean   @default(false)
+  currentRunStartedAt   DateTime?
+  updatedAt             DateTime  @updatedAt
+
+  @@map("system_settings")
+}
+

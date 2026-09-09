@@ -166,6 +166,57 @@ export interface Translations {
     originalSource: string;
     freshBadge: string;
   };
+
+  // Source Health & Control
+  sources: {
+    pageTitle: string;
+    pageSubtitle: string;
+    cadenceTitle: string;
+    cadenceDesc: string;
+    volumeTitle: string;
+    volumeDesc: string;
+    lastSyncTitle: string;
+    lastSyncDesc: string;
+    sourcesTitle: string;
+    sourcesCountBadge: string;
+    healthHealthy: string;
+    healthDegraded: string;
+    healthError: string;
+    healthIdle: string;
+    lastFetchPrefix: string;
+    enableToggle: string;
+    disableToggle: string;
+  };
+
+  // Export Depth Modal
+  exportModal: {
+    buttonTitle: string;
+    modalTitle: string;
+    modalSubtitle: string;
+    depthLabel: string;
+    depth1Title: string;
+    depth1Desc: string;
+    depth2Title: string;
+    depth2Desc: string;
+    depth3Title: string;
+    depth3Desc: string;
+    cancel: string;
+    confirm: string;
+    inProgressTitle: string;
+    inProgressSubtitle: string;
+    downloadingTitle: string;
+    successMessage: string;
+    errorMessage: string;
+  };
+
+  // Manual Refresh Controls
+  refreshControl: {
+    refreshNow: string;
+    refreshing: string;
+    cooldownNotice: string;
+    alreadyRunning: string;
+    success: string;
+  };
 }
 
 export const translations: Record<Locale, Translations> = {
@@ -368,6 +419,51 @@ export const translations: Record<Locale, Translations> = {
       originalSource: 'Source',
       freshBadge: 'New',
     },
+    sources: {
+      pageTitle: 'Pipeline Health & Source Management',
+      pageSubtitle: 'Real-time operational health, automated ingestion cadence, and source toggling.',
+      cadenceTitle: 'Worker Cadence',
+      cadenceDesc: 'Autonomous 24/7 background worker',
+      volumeTitle: 'Database Volume',
+      volumeDesc: 'PostgreSQL with multi-category deduplication',
+      lastSyncTitle: 'Last Completed Cycle',
+      lastSyncDesc: 'Pipeline status: Operational',
+      sourcesTitle: 'Configured Ingestion Sources',
+      sourcesCountBadge: 'sources integrated',
+      healthHealthy: 'Healthy',
+      healthDegraded: 'Degraded',
+      healthError: 'Offline / Error',
+      healthIdle: 'Idle',
+      lastFetchPrefix: 'Last checked',
+      enableToggle: 'Enabled',
+      disableToggle: 'Disabled',
+    },
+    exportModal: {
+      buttonTitle: 'Export Excel',
+      modalTitle: 'Export Fresh Job Listings',
+      modalSubtitle: 'Select your crawling depth. A live scrape will run across enabled sources before generating your Excel report.',
+      depthLabel: 'Scrape Depth Before Export',
+      depth1Title: 'Fast (1 page per source)',
+      depth1Desc: 'Quick check of newly listed jobs. Takes ~15–30 seconds.',
+      depth2Title: 'Balanced (2 pages per source)',
+      depth2Desc: 'Thorough discovery of recent postings. Takes ~45–60 seconds.',
+      depth3Title: 'Deep (3 pages per source)',
+      depth3Desc: 'Comprehensive historical extraction across all active feeds. Takes ~1–2 minutes.',
+      cancel: 'Cancel',
+      confirm: 'Scrape & Download Excel',
+      inProgressTitle: 'Refreshing jobs before export...',
+      inProgressSubtitle: 'Crawling enabled sources at selected depth to ensure you receive the freshest data.',
+      downloadingTitle: 'Generating Excel report...',
+      successMessage: 'Export complete! Your spreadsheet is downloading.',
+      errorMessage: 'Export scrape encountered an issue. You can still download current records.',
+    },
+    refreshControl: {
+      refreshNow: 'Refresh Now',
+      refreshing: 'Refreshing...',
+      cooldownNotice: 'Content will update automatically in {minutes} min',
+      alreadyRunning: 'A scrape cycle is already running in background.',
+      success: 'Fast refresh triggered successfully!',
+    },
   },
   ar: {
     nav: {
@@ -568,5 +664,51 @@ export const translations: Record<Locale, Translations> = {
       originalSource: 'المصدر',
       freshBadge: 'جديد',
     },
+    sources: {
+      pageTitle: 'سلامة الأنابيب وإدارة مصادر الفهرسة',
+      pageSubtitle: 'المقاييس التشغيلية الحية، جدولة الفهرسة الذاتية، والتحكم في تفعيل المصادر.',
+      cadenceTitle: 'معدل التحديث الذاتي',
+      cadenceDesc: 'خادم خلفي ذاتي يعمل على مدار الساعة',
+      volumeTitle: 'إجمالي الوظائف في القاعدة',
+      volumeDesc: 'قاعدة بيانات PostgreSQL مع كشف التكرار',
+      lastSyncTitle: 'آخر دورة مكتملة',
+      lastSyncDesc: 'حالة الأنابيب: تعمل بكفاءة',
+      sourcesTitle: 'مصادر الفهرسة المهيأة',
+      sourcesCountBadge: 'مصادر متكاملة',
+      healthHealthy: 'متاح',
+      healthDegraded: 'به مشكلة جزئية',
+      healthError: 'متوقف حاليًا',
+      healthIdle: 'في الانتظار',
+      lastFetchPrefix: 'آخر فحص',
+      enableToggle: 'مفعل',
+      disableToggle: 'معطل',
+    },
+    exportModal: {
+      buttonTitle: 'تصدير Excel',
+      modalTitle: 'تصدير أحدث الوظائف إلى Excel',
+      modalSubtitle: 'اختر عمق الفهرسة قبل التصدير. سيتم إجراء زحف فوري للمصادر المفعلة لضمان تضمين أحدث الوظائف غير المؤرشفة.',
+      depthLabel: 'عمق الزحف والفهرسة قبل التصدير',
+      depth1Title: 'سريع (صفحة واحدة لكل مصدر)',
+      depth1Desc: 'جلب أحدث الإعلانات الفورية المنشورة للتو (~15–30 ثانية).',
+      depth2Title: 'متوازن (صفحتان لكل مصدر)',
+      depth2Desc: 'استكشاف شامل للوظائف المنشورة حديثاً (~45–60 ثانية).',
+      depth3Title: 'عميق (3 صفحات لكل مصدر)',
+      depth3Desc: 'سحب أرشيفي مكثف عبر كافة المصادر النشطة (~1–2 دقيقة).',
+      cancel: 'إلغاء',
+      confirm: 'فهرسة وتنزيل ملف Excel',
+      inProgressTitle: 'جاري تحديث الوظائف قبل التصدير...',
+      inProgressSubtitle: 'يتم فحص المصادر المفعلة بالعمق المختار لضمان دقة وحداثة البيانات المنزلة.',
+      downloadingTitle: 'جاري إنشاء وتنزيل ملف Excel...',
+      successMessage: 'اكتملت الفهرسة والتصدير بنجاح! تم تنزيل الملف.',
+      errorMessage: 'حدث خطأ أثناء الزحف للتصدير. يمكنك تنزيل البيانات الحالية.',
+    },
+    refreshControl: {
+      refreshNow: 'تحديث الآن',
+      refreshing: 'جاري التحديث...',
+      cooldownNotice: 'سيتم تحديث المحتوى تلقائيًا خلال {minutes} دقيقة',
+      alreadyRunning: 'هناك عملية تحديث قيد التشغيل حالياً في الخلفية.',
+      success: 'تم إطلاق التحديث الفوري بنجاح!',
+    },
   },
 };
+

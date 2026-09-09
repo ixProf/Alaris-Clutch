@@ -100,6 +100,20 @@ const PROFILES = {
 
     requireEgyptOrRemote: true,
   },
+
+  'all-tech': {
+    experience: { min: 0, max: 99 },
+    allowAllExperience: true,
+    rejectSeniorTitles: false,
+    rejectMidTitles: false,
+    rejectTalentPools: true,
+    titleScope: 'all-tech',
+    allowAllTech: true,
+    requireFullDescription: false,
+    remoteOnly: false,
+    requireEgyptOrRemote: false,
+    maxAgeDays: 180,
+  },
 };
 
 const DEFAULT_PROFILE = 'egypt-junior';

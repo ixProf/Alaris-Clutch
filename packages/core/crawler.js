@@ -34,10 +34,17 @@ async function crawlSource(scraper, queries, { maxPages = 10, maxJobsPerQuery = 
     stats.found += collected.length;
     await mapPool(collected, concurrency, async (item) => {
       try {
-        if (repository && repository.isProcessed && repository.isProcessed(scraper.source, item.sourceJobId || item.url)) { stats.duplicates++; log('JOB_DUPLICATE', { source: scraper.source, url: item.url }); return; }
+        if (repository && repository.isProcessed) {
+          const processed = await repository.isProcessed(scraper.source, item.sourceJobId || item.url);
+          if (processed) {
+            stats.duplicates++;
+            log('JOB_DUPLICATE', { source: scraper.source, url: item.url, stage: 'isProcessed_db' });
+            return;
+          }
+        }
         const { canonicalizeUrl: _cu } = require('./url-normalizer');
         const runKey = `${scraper.source}:${item.sourceJobId ? String(item.sourceJobId) : _cu(item.url)}`;
-        if (seenInRun.has(runKey)) { stats.duplicates++; log('JOB_DUPLICATE', { source: scraper.source, url: item.url }); return; }
+        if (seenInRun.has(runKey)) { stats.duplicates++; log('JOB_DUPLICATE', { source: scraper.source, url: item.url, stage: 'seenInRun' }); return; }
         seenInRun.add(runKey);
         let raw;
         let fullDesc = false;
@@ -48,19 +55,25 @@ async function crawlSource(scraper, queries, { maxPages = 10, maxJobsPerQuery = 
         const job = scraper.normalize({ ...raw, url: raw.url || item.url });
         job.descriptionComplete = fullDesc;
         const dup = dedup.key(job);
-        if (dup.duplicate) { stats.duplicates++; log('JOB_DUPLICATE', { source: scraper.source, url: job.url }); return; }
+        if (dup.duplicate) { stats.duplicates++; log('JOB_DUPLICATE', { source: scraper.source, url: job.url, via: dup.via }); return; }
         dedup.add(job);
         const gate = passesFilters(job, { ...profile, experience: { min: 0, max: maxExp, ...(profile.experience || {}) } });
         if (!gate.accept) { stats.filtered++; log('JOB_FILTERED', { source: scraper.source, url: job.url, reason: gate.reason, stage: gate.stage }); return; }
         job.relevance = gate.relevance || job.relevance;
         stats.relevant++;
         if (!dryRun && repository) {
-          const r = repository.upsert(job);
-          if (r === 'new' || r === 'updated') { stats.saved++; log('JOB_SAVED', { source: scraper.source, url: job.url }); }
-          else { stats.duplicates++; log('JOB_DUPLICATE', { source: scraper.source, url: job.url }); }
+          const r = await repository.upsert(job);
+          if (r === 'new' || r === 'updated') {
+            stats.saved++;
+            log('JOB_SAVED', { source: scraper.source, title: job.title, url: job.url, result: r });
+          } else {
+            stats.duplicates++;
+            log('JOB_DUPLICATE', { source: scraper.source, url: job.url, stage: 'upsert_duplicate' });
+          }
         } else if (dryRun) { stats.saved++; }
       } catch (err) {
         stats.failed++;
+        console.error(`[Scraper ${scraper.source}] Item failure on ${item.url}:`, err && err.message);
         log('SCRAPE_FAILED', { source: scraper.source, url: item.url, error: String(err && err.message) });
       }
     });
