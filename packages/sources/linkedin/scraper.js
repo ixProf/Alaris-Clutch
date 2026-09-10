@@ -6,6 +6,7 @@ const { normalize } = require('@jobscrapper/core/normalizer');
 const { withRetry, fetchWithTimeout } = require('@jobscrapper/core/retry');
 const { RateLimiter } = require('@jobscrapper/core/rate-limiter');
 const { log } = require('@jobscrapper/core/logger');
+const { getStealthHeaders } = require('@jobscrapper/core/headers');
 
 class LinkedInScraper extends BaseScraper {
   constructor(cfg = {}) {
@@ -19,10 +20,11 @@ class LinkedInScraper extends BaseScraper {
     const wt = workType ? `&f_WT=${encodeURIComponent(workType)}` : '';
     return `https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}${wt}&start=${start}`;
   }
-  async fetchHtml(url) {
+  async fetchHtml(url, { isDetail = false, referer } = {}) {
     await this.limiter.wait();
     return withRetry(async () => {
-      const res = await fetchWithTimeout(url, { timeoutMs: this.cfg.timeoutMs || 15000, headers: { 'User-Agent': this.ua, Accept: 'text/html' } });
+      const headers = getStealthHeaders({ userAgent: this.ua, isDetail, referer, accept: 'text/html' });
+      const res = await fetchWithTimeout(url, { timeoutMs: this.cfg.timeoutMs || 15000, headers });
       if (res.status === 429) { this.limiter.backoff(); const e = new Error('rate limited 429'); e.status = 429; throw e; }
       if (res.status === 403 || res.status === 999) { const e = new Error(`blocked ${res.status}`); e.status = res.status; throw e; }
       if (!res.ok) { const e = new Error(`http ${res.status}`); e.status = res.status; throw e; }
@@ -32,11 +34,11 @@ class LinkedInScraper extends BaseScraper {
   }
   async search(query, { page = 0, location = '', workType = '' } = {}) {
     const url = this.buildSearchUrl(query, page, location, workType);
-    const html = await this.fetchHtml(url);
+    const html = await this.fetchHtml(url, { isDetail: false });
     return parseSearchPage(html).map((j) => ({ ...j, source: 'linkedin' }));
   }
   async scrapeJob(url) {
-    const html = await this.fetchHtml(url);
+    const html = await this.fetchHtml(url, { isDetail: true, referer: 'https://www.linkedin.com/jobs/search' });
     return { ...parseJobPage(html, url), source: 'linkedin' };
   }
   normalize(rawJob) { return normalize({ ...rawJob, source: 'linkedin' }); }

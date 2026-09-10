@@ -130,7 +130,7 @@ export async function runScrapeCycle(options: CycleOptions = {}): Promise<void> 
         name: sourceName,
         lastJobCount: r.found || 0,
         status: r.failed > 0 && r.found === 0 ? 'error' : r.failed > 0 ? 'degraded' : 'healthy',
-        lastError: r.failed > 0 ? `Encountered ${r.failed} failures during fetch/parse` : undefined,
+        lastError: r.failed > 0 ? (r.lastError || `Encountered ${r.failed} failures during fetch/parse`) : undefined,
       });
     }
 

@@ -82,3 +82,40 @@ test('retry classifier', () => {
   assert.equal(classifyError(Object.assign(new Error('x'), { status: 429 })), 'rate-limited');
   assert.equal(classifyError(Object.assign(new Error('x'), { status: 404 })), 'non-retryable');
 });
+
+test('stealth headers builder', () => {
+  const { getStealthHeaders } = require('@jobscrapper/core/headers');
+  const searchHeaders = getStealthHeaders({ isDetail: false });
+  assert.ok(searchHeaders['User-Agent'].includes('Mozilla/5.0'));
+  assert.ok(!searchHeaders['User-Agent'].includes('jobscrapper'));
+  assert.equal(searchHeaders['Accept-Language'], 'en-US,en;q=0.9');
+  assert.equal(searchHeaders['Sec-Fetch-Site'], 'none');
+  assert.equal(searchHeaders['Sec-Fetch-Dest'], 'document');
+  assert.equal(searchHeaders['Referer'], undefined);
+
+  const detailHeaders = getStealthHeaders({ isDetail: true, referer: 'https://example.com/search' });
+  assert.equal(detailHeaders['Sec-Fetch-Site'], 'same-origin');
+  assert.equal(detailHeaders['Referer'], 'https://example.com/search');
+
+  const jsonHeaders = getStealthHeaders({ accept: 'application/json' });
+  assert.ok(jsonHeaders['Accept'].includes('application/json'));
+  assert.equal(jsonHeaders['Sec-Fetch-Dest'], 'empty');
+});
+
+test('crawler formatErrorSummary', () => {
+  const { formatErrorSummary } = require('@jobscrapper/core/crawler');
+  assert.equal(formatErrorSummary([], 14), null);
+  
+  const blockedErrors = Array.from({ length: 14 }, () => ({
+    stage: 'search', status: 403, kind: 'blocked', message: 'blocked 403'
+  }));
+  assert.equal(formatErrorSummary(blockedErrors, 14), 'Blocked (403) on 14/14 queries');
+
+  const mixedErrors = [
+    { stage: 'search', status: 429, kind: 'rate-limited', message: 'rate limited 429' },
+    { stage: 'search', status: 429, kind: 'rate-limited', message: 'rate limited 429' },
+    { stage: 'search', status: null, kind: 'network-error', message: 'timeout' },
+  ];
+  assert.equal(formatErrorSummary(mixedErrors, 14), 'Rate limited (429) on 2/14 queries; Network error on 1/14 queries');
+});
+

@@ -4,9 +4,50 @@ const { log } = require('./logger');
 const { Deduplicator } = require('./deduplicator');
 const { passesFilters } = require('./gate');
 const { mapPool } = require('./rate-limiter');
+const { classifyError } = require('./retry');
+
+function formatErrorSummary(errors, totalQueries) {
+  if (!errors || !errors.length) return null;
+  const counts = new Map();
+  for (const e of errors) {
+    const key = e.status ? `${e.kind || 'error'}:${e.status}` : (e.kind || 'error');
+    counts.set(key, (counts.get(key) || 0) + 1);
+  }
+  const parts = [];
+  for (const [key, count] of counts.entries()) {
+    const [kind, status] = key.split(':');
+    const queryRatio = totalQueries ? `${count}/${totalQueries}` : `${count}`;
+    if (kind === 'blocked') {
+      parts.push(`Blocked (${status || '403/999'}) on ${queryRatio} queries`);
+    } else if (kind === 'rate-limited') {
+      parts.push(`Rate limited (${status || '429'}) on ${queryRatio} queries`);
+    } else if (kind === 'network-error') {
+      parts.push(`Network error on ${queryRatio} queries`);
+    } else if (status) {
+      parts.push(`HTTP ${status} on ${queryRatio} queries`);
+    } else {
+      parts.push(`${kind} on ${queryRatio} queries`);
+    }
+  }
+  return parts.join('; ');
+}
 
 async function crawlSource(scraper, queries, { maxPages = 10, maxJobsPerQuery = 50, concurrency = 3, repository = null, dryRun = false, maxExp = 2, remoteQueries = [], remoteLocation = 'Remote', location = 'Egypt', profile = {} } = {}) {
-  const stats = { source: scraper.source, queries: queries.length, found: 0, relevant: 0, saved: 0, duplicates: 0, failed: 0, filtered: 0 };
+  const totalQueries = queries.length + (remoteQueries.length || 0);
+  const stats = {
+    source: scraper.source,
+    queries: totalQueries,
+    found: 0,
+    relevant: 0,
+    saved: 0,
+    duplicates: 0,
+    failed: 0,
+    filtered: 0,
+    errors: [],
+    lastError: null,
+    lastErrorStatus: null,
+    errorKinds: [],
+  };
   const dedup = new Deduplicator();
   const seenInRun = new Set();
   const rounds = [{ queries, location: location || 'Egypt', workType: '' }];
@@ -24,6 +65,9 @@ async function crawlSource(scraper, queries, { maxPages = 10, maxJobsPerQuery = 
       } catch (err) {
         log('SCRAPE_FAILED', { source: scraper.source, query, page, error: String(err && err.message) });
         stats.failed++;
+        const status = (err && (err.status || err.statusCode)) || null;
+        const kind = (err && err.kind) || classifyError(err);
+        stats.errors.push({ stage: 'search', query, page, status, kind, message: String(err && err.message) });
         break;
       }
       if (!items.length) break;
@@ -75,9 +119,17 @@ async function crawlSource(scraper, queries, { maxPages = 10, maxJobsPerQuery = 
         stats.failed++;
         console.error(`[Scraper ${scraper.source}] Item failure on ${item.url}:`, err && err.message);
         log('SCRAPE_FAILED', { source: scraper.source, url: item.url, error: String(err && err.message) });
+        const status = (err && (err.status || err.statusCode)) || null;
+        const kind = (err && err.kind) || classifyError(err);
+        stats.errors.push({ stage: 'item', url: item.url, status, kind, message: String(err && err.message) });
       }
     });
   }
+  }
+  if (stats.errors.length > 0) {
+    stats.lastError = formatErrorSummary(stats.errors, totalQueries);
+    stats.lastErrorStatus = stats.errors[0]?.status || null;
+    stats.errorKinds = [...new Set(stats.errors.map((e) => e.kind).filter(Boolean))];
   }
   log('SCRAPE_COMPLETED', { source: scraper.source, ...stats });
   return stats;
@@ -93,10 +145,25 @@ async function crawlAll(scrapers, cfg, repository) {
       results.push(r);
     } catch (err) {
       log('SCRAPE_FAILED', { source: s.source, error: String(err && err.message) });
-      results.push({ source: s.source, queries: 0, found: 0, relevant: 0, saved: 0, duplicates: 0, failed: 1, filtered: 0, disabled: true });
+      const status = (err && (err.status || err.statusCode)) || null;
+      const kind = (err && err.kind) || classifyError(err);
+      results.push({
+        source: s.source,
+        queries: 0,
+        found: 0,
+        relevant: 0,
+        saved: 0,
+        duplicates: 0,
+        failed: 1,
+        filtered: 0,
+        disabled: true,
+        lastError: `Fatal failure: ${String(err && err.message)}`,
+        lastErrorStatus: status,
+        errorKinds: [kind],
+      });
     }
   }
   return results;
 }
 
-module.exports = { crawlSource, crawlAll };
+module.exports = { crawlSource, crawlAll, formatErrorSummary };

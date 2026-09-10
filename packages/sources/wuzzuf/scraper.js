@@ -6,6 +6,7 @@ const { normalize } = require('@jobscrapper/core/normalizer');
 const { withRetry, fetchWithTimeout } = require('@jobscrapper/core/retry');
 const { RateLimiter } = require('@jobscrapper/core/rate-limiter');
 const { log } = require('@jobscrapper/core/logger');
+const { getStealthHeaders } = require('@jobscrapper/core/headers');
 
 class WuzzufScraper extends BaseScraper {
   constructor(cfg = {}) {
@@ -19,10 +20,11 @@ class WuzzufScraper extends BaseScraper {
     // strict relevance/experience filtering still applies per job.
     return 'https://wuzzuf.net/jobs/egypt';
   }
-  async fetchHtml(url) {
+  async fetchHtml(url, { isDetail = false, referer } = {}) {
     await this.limiter.wait();
     return withRetry(async () => {
-      const res = await fetchWithTimeout(url, { timeoutMs: this.cfg.timeoutMs || 15000, headers: { 'User-Agent': this.ua, Accept: 'text/html' } });
+      const headers = getStealthHeaders({ userAgent: this.ua, isDetail, referer, accept: 'text/html' });
+      const res = await fetchWithTimeout(url, { timeoutMs: this.cfg.timeoutMs || 15000, headers });
       if (res.status === 429) { this.limiter.backoff(); const e = new Error('rate limited 429'); e.status = 429; throw e; }
       if (res.status === 403) { const e = new Error('blocked 403'); e.status = 403; throw e; }
       if (!res.ok) { const e = new Error(`http ${res.status}`); e.status = res.status; throw e; }
@@ -38,7 +40,8 @@ class WuzzufScraper extends BaseScraper {
       try {
         await this.limiter.wait();
         const xml = await withRetry(async () => {
-          const res = await fetchWithTimeout(sm, { timeoutMs: this.cfg.timeoutMs || 15000, headers: { 'User-Agent': this.ua } });
+          const headers = getStealthHeaders({ userAgent: this.ua, isDetail: false, accept: 'text/html' });
+          const res = await fetchWithTimeout(sm, { timeoutMs: this.cfg.timeoutMs || 20000, headers });
           if (!res.ok) { const e = new Error(`http ${res.status}`); e.status = res.status; throw e; }
           return res.text();
         }, { maxRetries: 3 });
@@ -62,11 +65,11 @@ class WuzzufScraper extends BaseScraper {
       log('SCRAPE_FAILED', { source: 'wuzzuf', query, error: String(e && e.message) });
     }
     const url = this.buildSearchUrl(query, page);
-    const html = await this.fetchHtml(url);
+    const html = await this.fetchHtml(url, { isDetail: false });
     return parseSearchPage(html).map((j) => ({ ...j, source: 'wuzzuf' }));
   }
   async scrapeJob(url) {
-    const html = await this.fetchHtml(url);
+    const html = await this.fetchHtml(url, { isDetail: true, referer: 'https://wuzzuf.net/jobs/egypt' });
     return { ...parseJobPage(html, url), source: 'wuzzuf' };
   }
   normalize(rawJob) { return normalize({ ...rawJob, source: 'wuzzuf' }); }

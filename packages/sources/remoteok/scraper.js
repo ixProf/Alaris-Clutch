@@ -6,6 +6,7 @@ const { normalize } = require('@jobscrapper/core/normalizer');
 const { withRetry, fetchWithTimeout } = require('@jobscrapper/core/retry');
 const { RateLimiter } = require('@jobscrapper/core/rate-limiter');
 const { log } = require('@jobscrapper/core/logger');
+const { getStealthHeaders } = require('@jobscrapper/core/headers');
 
 class RemoteokScraper extends BaseScraper {
   constructor(cfg = {}) {
@@ -19,7 +20,8 @@ class RemoteokScraper extends BaseScraper {
     if (this._cache) return this._cache;
     await this.limiter.wait();
     const items = await withRetry(async () => {
-      const res = await fetchWithTimeout('https://remoteok.com/api', { timeoutMs: this.cfg.timeoutMs || 15000, headers: { 'User-Agent': this.ua, Accept: 'application/json' } });
+      const headers = getStealthHeaders({ userAgent: this.ua, accept: 'application/json' });
+      const res = await fetchWithTimeout('https://remoteok.com/api', { timeoutMs: this.cfg.timeoutMs || 15000, headers });
       if (!res.ok) { const e = new Error(`http ${res.status}`); e.status = res.status; throw e; }
       return res.json();
     }, { maxRetries: this.cfg.maxRetries || 5, onRetry: (r) => log('RETRY', { source: 'remoteok', ...r, error: String(r.error && r.error.message) }) });
